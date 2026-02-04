@@ -3,124 +3,407 @@
 <head>
   <meta charset="UTF-8">
   <!-- 移动端视口设置 -->
-  <!-- width=device-width → 宽度等于设备屏宽 -->
-  <!-- initial-scale=1.0 → 初始缩放比例为 1 -->
-  <!-- user-scalable=no → 禁止用户缩放 -->
-  <!-- maximum-scale=1 → 最大缩放比例为 1 -->
   <meta content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1" name="viewport">
-  <!-- 安卓/Chrome Web App 全屏显示 -->
   <meta content="yes" name="mobile-web-app-capable">
-  <!-- iOS Safari 全屏显示（保留兼容） -->
   <meta content="yes" name="apple-mobile-web-app-capable">
-  <!-- 禁止 iOS 自动识别电话号码 -->
   <meta content="telephone=no" name="format-detection">
-  <title>SoNovel WebUI</title>
+  <title>SoNovel - 现代化小说下载工具</title>
   <link href="favicon.ico" rel="icon" type="image/x-icon">
+  <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="/index.css">
+  <!-- 引入现代化图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- 主题色 -->
+  <meta name="theme-color" content="#6366f1">
+  <!-- PWA 相关 -->
+  <meta name="apple-mobile-web-app-title" content="SoNovel">
+  <meta name="application-name" content="SoNovel">
+  <!-- SEO 优化 -->
+  <meta name="description" content="SoNovel - 现代化的网络小说下载工具，支持多种格式导出">
+  <meta name="keywords" content="小说下载,网络小说,EPUB,TXT,PDF,下载工具">
+  <meta name="author" content="SoNovel">
 </head>
 <body>
-<div class="wrap-container">
-  <header class="header">
-    <h1 class="app-title">SO NOVEL</h1>
-    <a id="versionTag" class="version-tag" target="_blank">version</a>
-  </header>
+<div class="app-container">
+  <!-- 侧边栏导航 -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <i class="fas fa-book-open logo-icon"></i>
+        <h1 class="app-title">SO NOVEL</h1>
+      </div>
+      <a id="versionTag" class="version-tag" target="_blank">version</a>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li class="nav-item active" data-tab="search">
+          <a href="#" class="nav-link">
+            <i class="fas fa-search"></i>
+            <span>搜索书籍</span>
+          </a>
+        </li>
+        <li class="nav-item" data-tab="library">
+          <a href="#" class="nav-link">
+            <i class="fas fa-book"></i>
+            <span>我的书库</span>
+          </a>
+        </li>
+        <li class="nav-item" data-tab="settings">
+          <a href="#" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>设置</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="theme-toggle">
+        <button id="themeToggle" class="btn-icon">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
 
+  <!-- 主内容区域 -->
   <main class="main-content">
-    <section class="container download-container" id="downloadContainer">
-      <h2 class="section-title">搜索书籍</h2>
-      <div class="search-container">
-        <input id="downloadSearchName" placeholder="请输入书名或作者，尽量输完整" aria-label="搜索书名或作者">
-        <button class="btn btn-primary btn-search" id="searchButton">搜索</button>
+    <!-- 顶部工具栏 -->
+    <header class="topbar">
+      <button class="btn-icon sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="breadcrumb">
+        <span id="currentTabName">搜索书籍</span>
       </div>
-      <div class="body-container" id="tb1">
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-            <tr>
-              <th scope="col">No</th>
-              <th scope="col">书名</th>
-              <th scope="col">作者</th>
-              <th scope="col">最新章节</th>
-              <th scope="col">最后更新</th>
-              <th scope="col">书源</th>
-              <th scope="col">操作</th>
-              <th scope="col">源站</th>
-            </tr>
-            </thead>
-            <tbody id="downloadTableBody">
-            </tbody>
-          </table>
+      <div class="topbar-actions">
+        <button class="btn-icon" id="refreshBtn">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- 搜索页面 -->
+    <section class="tab-content active" id="searchTab">
+      <div class="container">
+        <div class="search-section">
+          <div class="search-header">
+            <h2 class="section-title">
+              <i class="fas fa-search"></i>
+              搜索书籍
+            </h2>
+            <p class="section-desc">输入书名或作者名，支持模糊搜索</p>
+          </div>
+          
+          <div class="search-container">
+            <div class="search-input-wrapper">
+              <i class="fas fa-search search-icon"></i>
+              <input 
+                id="downloadSearchName" 
+                class="search-input" 
+                placeholder="请输入书名或作者，尽量输完整" 
+                aria-label="搜索书名或作者"
+                autocomplete="off"
+              >
+              <button class="btn-clear" id="clearSearch" style="display: none;">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <button class="btn btn-primary btn-search" id="searchButton">
+              <i class="fas fa-search"></i>
+              <span>搜索</span>
+            </button>
+          </div>
+          
+          <!-- 搜索过滤器 -->
+          <div class="search-filters" id="searchFilters" style="display: none;">
+            <div class="filter-group">
+              <label class="filter-label">书源</label>
+              <select class="filter-select" id="sourceFilter">
+                <option value="">全部书源</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">排序</label>
+              <select class="filter-select" id="sortFilter">
+                <option value="relevance">相关度</option>
+                <option value="update">更新时间</option>
+                <option value="name">书名</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 搜索结果 -->
+        <div class="results-section" id="tb1" style="display: none;">
+          <div class="results-header">
+            <h3 class="results-title">搜索结果</h3>
+            <div class="results-stats">
+              <span id="resultsCount">0</span> 本书籍
+            </div>
+          </div>
+          
+          <div class="books-grid" id="booksGrid">
+            <!-- 书籍卡片将在这里动态生成 -->
+          </div>
+          
+          <!-- 表格视图（移动端备用） -->
+          <div class="table-responsive mobile-only">
+            <table class="data-table">
+              <thead>
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">书名</th>
+                <th scope="col">作者</th>
+                <th scope="col">最新章节</th>
+                <th scope="col">最后更新</th>
+                <th scope="col">书源</th>
+                <th scope="col">操作</th>
+                <th scope="col">源站</th>
+              </tr>
+              </thead>
+              <tbody id="downloadTableBody">
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="container result-container">
-      <div class="section-header">
-        <h2 class="section-title">已下书籍</h2>
-        <button class="btn btn-primary" id="refreshList">刷新</button>
-      </div>
-      <div class="body-container" id="tb2">
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-            <tr>
-              <th scope="col">文件名</th>
-              <th scope="col">文件大小</th>
-              <th scope="col">下载时间</th>
-              <th scope="col">操作</th>
-            </tr>
-            </thead>
-            <tbody id="tableBody">
-            </tbody>
-          </table>
+    <!-- 书库页面 -->
+    <section class="tab-content" id="libraryTab">
+      <div class="container">
+        <div class="library-header">
+          <h2 class="section-title">
+            <i class="fas fa-book"></i>
+            我的书库
+          </h2>
+          <div class="library-stats">
+            <div class="stat-item">
+              <span class="stat-value" id="totalBooks">0</span>
+              <span class="stat-label">总书籍</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="totalSize">0 MB</span>
+              <span class="stat-label">总大小</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 书库内容 -->
+        <div class="library-content" id="tb2">
+          <div class="books-grid" id="localBooksGrid">
+            <!-- 本地书籍卡片将在这里动态生成 -->
+          </div>
+          
+          <!-- 表格视图（移动端备用） -->
+          <div class="table-responsive mobile-only">
+            <table class="data-table">
+              <thead>
+              <tr>
+                <th scope="col">文件名</th>
+                <th scope="col">文件大小</th>
+                <th scope="col">下载时间</th>
+                <th scope="col">操作</th>
+              </tr>
+              </thead>
+              <tbody id="tableBody">
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- 设置页面 -->
+    <section class="tab-content" id="settingsTab">
+      <div class="container">
+        <div class="settings-header">
+          <h2 class="section-title">
+            <i class="fas fa-cog"></i>
+            应用设置
+          </h2>
+        </div>
+
+        <div class="settings-content">
+          <div class="settings-section">
+            <h3 class="settings-section-title">下载设置</h3>
+            <div class="setting-item">
+              <label class="setting-label">默认下载格式</label>
+              <select class="setting-select" id="defaultFormat">
+                <option value="epub">EPUB</option>
+                <option value="txt">TXT</option>
+                <option value="pdf">PDF</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <label class="setting-label">下载路径</label>
+              <input type="text" class="setting-input" id="downloadPath" readonly>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-section-title">界面设置</h3>
+            <div class="setting-item">
+              <label class="setting-label">主题</label>
+              <div class="theme-options">
+                <button class="theme-option active" data-theme="light">
+                  <i class="fas fa-sun"></i>
+                  <span>浅色</span>
+                </button>
+                <button class="theme-option" data-theme="dark">
+                  <i class="fas fa-moon"></i>
+                  <span>深色</span>
+                </button>
+                <button class="theme-option" data-theme="auto">
+                  <i class="fas fa-adjust"></i>
+                  <span>自动</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3 class="settings-section-title">关于</h3>
+            <div class="about-info">
+              <div class="info-item">
+                <span class="info-label">版本</span>
+                <span class="info-value" id="aboutVersion">-</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">GitHub</span>
+                <a href="https://github.com/freeok/so-novel" target="_blank" class="info-link">
+                  freeok/so-novel
+                  <i class="fas fa-external-link-alt"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 
-<div class="loading-container" id="tipEle">
-  <div class="content">
-    <svg class="loading-icon" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="none" stroke="#fff" stroke-width="8" stroke-dasharray="141.37 87.96"
-              stroke-linecap="round"></circle>
-    </svg>
-    <span class="text" id="tipText">正在下载</span>
+<!-- 加载遮罩 -->
+<div class="loading-overlay" id="tipEle">
+  <div class="loading-modal">
+    <div class="loading-content">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+      </div>
+      <div class="loading-text">
+        <h3 id="tipText">正在处理</h3>
+        <div class="loading-progress" id="loadingProgress" style="display: none;">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <span class="progress-text" id="progressText">0%</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Toast 通知 -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     // DOM 元素引用
-    const downloadContainer = document.getElementById('downloadContainer')
     const downloadSearchName = document.getElementById('downloadSearchName')
     const searchButton = document.getElementById('searchButton')
-    const refreshListButton = document.getElementById('refreshList')
-    const downloadTableBody = document.getElementById('downloadTableBody')
-    const tableBody = document.getElementById('tableBody')
+    const refreshBtn = document.getElementById('refreshBtn')
+    const clearSearchBtn = document.getElementById('clearSearch')
     const tipEle = document.getElementById('tipEle')
     const tipText = document.getElementById('tipText')
     const versionTag = document.getElementById("versionTag");
     const tb1 = document.getElementById('tb1');
     const tb2 = document.getElementById('tb2');
+    const booksGrid = document.getElementById('booksGrid');
+    const localBooksGrid = document.getElementById('localBooksGrid');
+    const downloadTableBody = document.getElementById('downloadTableBody');
+    const tableBody = document.getElementById('tableBody');
+    const resultsCount = document.getElementById('resultsCount');
+    const totalBooks = document.getElementById('totalBooks');
+    const totalSize = document.getElementById('totalSize');
+    const aboutVersion = document.getElementById('aboutVersion');
+    
+    // 导航相关
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const navItems = document.querySelectorAll('.nav-item');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const currentTabName = document.getElementById('currentTabName');
+    
+    // 主题相关
+    const themeToggle = document.getElementById('themeToggle');
+    const themeOptions = document.querySelectorAll('.theme-option');
 
     let bookCache = []
-    // 最新下载的书的文件名
     let latestFileName = ''
+    let currentTheme = localStorage.getItem('theme') || 'light';
+
+    // 初始化主题
+    initTheme();
 
     // 工具函数
-    const showTip = (text = '正在加载...') => {
+    const showTip = (text = '正在加载...', showProgress = false) => {
       tipText.innerHTML = text
+      const progressEl = document.getElementById('loadingProgress');
+      if (showProgress) {
+        progressEl.style.display = 'block';
+      } else {
+        progressEl.style.display = 'none';
+      }
       tipEle.style.display = 'flex'
     }
 
-    const updateTip = (text) => {
+    const updateTip = (text, progress = null) => {
       tipText.innerHTML = text
+      if (progress !== null) {
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        progressFill.style.width = `${progress}%`;
+        progressText.textContent = `${progress}%`;
+      }
     }
 
     const hideTip = () => {
       tipEle.style.display = 'none'
+    }
+
+    const showToast = (message, type = 'info') => {
+      const toastContainer = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `
+        <div class="toast-content">
+          <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+          <span>${message}</span>
+        </div>
+        <button class="toast-close">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      // 自动关闭
+      setTimeout(() => {
+        toast.classList.add('toast-hiding');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+      
+      // 手动关闭
+      toast.querySelector('.toast-close').addEventListener('click', () => {
+        toast.classList.add('toast-hiding');
+        setTimeout(() => toast.remove(), 300);
+      });
     }
 
     const formatSize = (bytes) => {
@@ -139,34 +422,122 @@
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
+        minute: '2-digit'
       })
     }
 
-    // 事件处理函数
-    const handleDownloadFileToLocal = (name) => {
-      console.log('download to local', `《${name}》`)
-      window.open(`${window.location.origin}/book-download?filename=${encodeURIComponent(name)}`, '_blank')
+    // 主题初始化
+    function initTheme() {
+      applyTheme(currentTheme);
+      themeOptions.forEach(option => {
+        if (option.dataset.theme === currentTheme) {
+          option.classList.add('active');
+        }
+      });
     }
 
-    const handleDownloadToServer = async (index) => {
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.body.classList.add('dark-theme');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        document.body.classList.remove('dark-theme');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+      currentTheme = theme;
+      localStorage.setItem('theme', theme);
+    }
+
+    // 渲染书籍卡片
+    const renderBookCards = (data, isLocal = false) => {
+      const grid = isLocal ? localBooksGrid : booksGrid;
+      grid.innerHTML = data.map((item, index) => {
+        if (isLocal) {
+          return `
+            <div class="book-card">
+              <div class="book-cover">
+                <i class="fas fa-book"></i>
+              </div>
+              <div class="book-info">
+                <h3 class="book-title">${item.name.replace(/\.(epub|txt|pdf)$/i, '')}</h3>
+                <div class="book-meta">
+                  <span class="book-size">${formatSize(item.size)}</span>
+                  <span class="book-date">${formatDate(item.timestamp)}</span>
+                </div>
+              </div>
+              <div class="book-actions">
+                <button class="btn btn-primary" onclick="handleDownloadFileToLocal('${item.name}')">
+                  <i class="fas fa-download"></i>
+                  下载
+                </button>
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="book-card">
+              <div class="book-cover">
+                <i class="fas fa-book"></i>
+              </div>
+              <div class="book-info">
+                <h3 class="book-title">${item.bookName}</h3>
+                <p class="book-author">作者：${item.author}</p>
+                <div class="book-meta">
+                  <span class="book-source">${item.sourceId}</span>
+                  ${item.lastUpdateTime ? `<span class="book-update">${item.lastUpdateTime}</span>` : ''}
+                </div>
+                ${item.latestChapter ? `<div class="book-chapter">${item.latestChapter}</div>` : ''}
+              </div>
+              <div class="book-actions">
+                <button class="btn btn-primary" onclick="handleDownloadToServer(${index})">
+                  <i class="fas fa-download"></i>
+                  下载
+                </button>
+                <a href="${item.url}" target="_blank" class="btn btn-secondary">
+                  <i class="fas fa-external-link-alt"></i>
+                  源站
+                </a>
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+      
+      // 更新统计
+      if (isLocal) {
+        totalBooks.textContent = data.length;
+        const totalSizeBytes = data.reduce((sum, item) => sum + item.size, 0);
+        totalSize.textContent = formatSize(totalSizeBytes);
+      } else {
+        resultsCount.textContent = data.length;
+      }
+    }
+
+    // 事件处理函数
+    window.handleDownloadFileToLocal = (name) => {
+      console.log('download to local', `《${name}》`)
+      window.open(`${window.location.origin}/book-download?filename=${encodeURIComponent(name)}`, '_blank')
+      showToast(`开始下载《${name}》`, 'success');
+    }
+
+    window.handleDownloadToServer = async (index) => {
       const item = bookCache[index]
       if (!item) {
-        alert('参数错误，请重新搜索')
+        showToast('参数错误，请重新搜索', 'error');
         return
       }
-      // 在发起请求前，显示弹窗
-      showTip(`正在解析目录...`)
+      
+      showTip(`正在解析《${item.bookName}》...`)
       const query = new URLSearchParams(item).toString()
       try {
         await fetch(`/book-fetch?${query}`)
         await fetchLocalBooks()
-        // fetch 会把响应当成 XHR 请求，返回一个 Response 对象，不会走浏览器默认的下载流程
         window.location.href = `/book-download?filename=${latestFileName}`
+        showToast(`《${item.bookName}》下载完成`, 'success');
       } catch (error) {
         console.error('Error downloading file to server:', error)
         updateTip('下载失败')
+        showToast('下载失败，请重试', 'error');
       } finally {
         hideTip()
       }
@@ -174,49 +545,61 @@
 
     const renderDownloadTable = (data) => {
       bookCache = data
+      renderBookCards(data, false);
+      
+      // 移动端表格视图
       downloadTableBody.innerHTML = data.map((item, index) => `
-      <tr>
-        <td data-label="No">${index + 1}</td>
-        <td data-label="书名">${item.bookName}</td>
-        <td data-label="作者">${item.author}</td>
-        <td data-label="最新章节">${item.latestChapter || ''}</td>
-        <td data-label="最后更新">${item.lastUpdateTime || ''}</td>
-        <td data-label="书源">${item.sourceId}</td>
-        <td data-label="操作"><button class="btn btn-secondary btn-download" data-index="${index}">下载</button></td>
-        <td data-label="源站"><a href="${item.url}" target="_blank"><button class="btn btn-secondary btn-download">前往</button></a></td>
-      </tr>
-    `).join('')
+        <tr>
+          <td data-label="No">${index + 1}</td>
+          <td data-label="书名">${item.bookName}</td>
+          <td data-label="作者">${item.author}</td>
+          <td data-label="最新章节">${item.latestChapter || ''}</td>
+          <td data-label="最后更新">${item.lastUpdateTime || ''}</td>
+          <td data-label="书源">${item.sourceId}</td>
+          <td data-label="操作"><button class="btn btn-secondary btn-download" onclick="handleDownloadToServer(${index})">下载</button></td>
+          <td data-label="源站"><a href="${item.url}" target="_blank"><button class="btn btn-secondary btn-download">前往</button></a></td>
+        </tr>
+      `).join('')
+      
       if (data.length > 0) {
         tb1.style.display = ''
       }
     }
 
     const renderLocalBooksTable = (data) => {
+      renderBookCards(data, true);
+      
+      // 移动端表格视图
       tableBody.innerHTML = data.map(item => `
-      <tr>
-        <td data-label="文件名">${item.name}</td>
-        <td data-label="文件大小">${formatSize(item.size)}</td>
-        <td data-label="下载时间">${formatDate(item.timestamp)}</td>
-        <td data-label="操作"><button class="btn btn-secondary btn-download" data-filename="${item.name}">下载</button></td>
-      </tr>
-    `).join('')
+        <tr>
+          <td data-label="文件名">${item.name}</td>
+          <td data-label="文件大小">${formatSize(item.size)}</td>
+          <td data-label="下载时间">${formatDate(item.timestamp)}</td>
+          <td data-label="操作"><button class="btn btn-secondary btn-download" onclick="handleDownloadFileToLocal('${item.name}')">下载</button></td>
+        </tr>
+      `).join('')
+      
       if (data.length > 0) {
         tb2.style.display = ''
       }
     }
 
     const fetchVersion = async () => {
-      const response = await fetch('/version')
-      const data = await response.json()
-      const ver = data.data
-      console.log('version:', ver)
-      versionTag.innerText = ver
-      versionTag.href = `https://github.com/freeok/so-novel/releases/tag/${ver}`
+      try {
+        const response = await fetch('/version')
+        const data = await response.json()
+        const ver = data.data
+        console.log('version:', ver)
+        versionTag.innerText = ver
+        versionTag.href = `https://github.com/freeok/so-novel/releases/tag/${ver}`
+        aboutVersion.textContent = ver
+      } catch (error) {
+        console.error('Error fetching version:', error);
+      }
     }
 
-    // 已下书籍
     const fetchLocalBooks = async () => {
-      showTip('正在刷新...')
+      showTip('正在刷新书库...')
       try {
         const response = await fetch('/local-books')
         const data = await response.json()
@@ -231,6 +614,7 @@
       } catch (error) {
         console.error('Error fetching file list:', error)
         updateTip('刷新失败')
+        showToast('刷新书库失败', 'error');
       } finally {
         hideTip()
       }
@@ -239,32 +623,35 @@
     const aggregatedSearch = async () => {
       const value = downloadSearchName.value.trim()
       if (!value) {
-        alert("请输入书名或作者！")
+        showToast("请输入书名或作者！", 'error');
         return
       }
-      showTip('正在搜索...')
-      searchButton.disabled = true // 搜索时禁用按钮
-      downloadSearchName.disabled = true // 搜索时禁用输入框
+      
+      showTip('正在搜索书籍...')
+      searchButton.disabled = true
+      downloadSearchName.disabled = true
       try {
         const response = await fetch(`/search/aggregated?kw=${encodeURIComponent(value)}`)
         const data = await response.json()
         console.log('search results', data)
         if (data && data.data) {
           renderDownloadTable(data.data)
+          showToast(`找到 ${data.data.length} 本相关书籍`, 'success');
+        } else {
+          showToast('未找到相关书籍', 'info');
         }
       } catch (error) {
         console.error('Error searching files:', error)
         updateTip('搜索失败')
+        showToast('搜索失败，请重试', 'error');
       } finally {
         hideTip()
-        downloadContainer.classList.add('expanded')
-        searchButton.disabled = false // 搜索完成后启用按钮
-        downloadSearchName.disabled = false // 搜索完成后启用输入框
+        searchButton.disabled = false
+        downloadSearchName.disabled = false
       }
     }
 
     const initSSE = () => {
-      // 相对路径更稳健，自动适配 http/https、端口和域名
       const evtSource = new EventSource("/download-progress")
 
       evtSource.onopen = (event) => {
@@ -279,7 +666,8 @@
         try {
           const data = JSON.parse(e.data)
           if (data.type === "download-progress") {
-            updateTip(`进度: ${data.index} / ${data.total}`)
+            const progress = Math.round((data.index / data.total) * 100);
+            updateTip(`下载进度: ${data.index} / ${data.total}`, progress);
           }
         } catch (err) {
           console.error("❌ SSE 数据解析失败:", err, e.data)
@@ -287,9 +675,62 @@
       }
     }
 
+    // 导航切换
+    function switchTab(tabName) {
+      navItems.forEach(item => {
+        if (item.dataset.tab === tabName) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+      
+      tabContents.forEach(content => {
+        if (content.id === `${tabName}Tab`) {
+          content.classList.add('active');
+        } else {
+          content.classList.remove('active');
+        }
+      });
+      
+      // 更新面包屑
+      const tabNames = {
+        search: '搜索书籍',
+        library: '我的书库',
+        settings: '应用设置'
+      };
+      currentTabName.textContent = tabNames[tabName];
+    }
+
     // 事件监听器
     searchButton.addEventListener('click', aggregatedSearch)
-    refreshListButton.addEventListener('click', fetchLocalBooks)
+    refreshBtn.addEventListener('click', () => {
+      const activeTab = document.querySelector('.nav-item.active').dataset.tab;
+      if (activeTab === 'library') {
+        fetchLocalBooks();
+      } else if (activeTab === 'search') {
+        if (downloadSearchName.value.trim()) {
+          aggregatedSearch();
+        } else {
+          showToast('请先输入搜索关键词', 'info');
+        }
+      }
+    });
+
+    // 搜索框清空按钮
+    downloadSearchName.addEventListener('input', (e) => {
+      if (e.target.value.trim()) {
+        clearSearchBtn.style.display = 'block';
+      } else {
+        clearSearchBtn.style.display = 'none';
+      }
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+      downloadSearchName.value = '';
+      clearSearchBtn.style.display = 'none';
+      downloadSearchName.focus();
+    });
 
     // 按下 Enter 键触发搜索
     downloadSearchName.addEventListener('keydown', (e) => {
@@ -298,20 +739,32 @@
       }
     })
 
-    // 使用事件委托处理下载按钮点击
-    downloadTableBody.addEventListener('click', (e) => {
-      const button = e.target.closest('button.btn-secondary')
-      if (button && button.dataset.index !== undefined) {
-        handleDownloadToServer(button.dataset.index)
-      }
-    })
+    // 侧边栏切换
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+    });
 
-    tableBody.addEventListener('click', (e) => {
-      const button = e.target.closest('button.btn-secondary')
-      if (button && button.dataset.filename) {
-        handleDownloadFileToLocal(button.dataset.filename)
-      }
-    })
+    // 导航点击事件
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchTab(item.dataset.tab);
+      });
+    });
+
+    // 主题切换
+    themeToggle.addEventListener('click', () => {
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      applyTheme(newTheme);
+    });
+
+    themeOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        themeOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        applyTheme(option.dataset.theme);
+      });
+    });
 
     // 页面加载时执行
     initSSE()

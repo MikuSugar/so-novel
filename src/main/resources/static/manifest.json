@@ -1,0 +1,19 @@
+{
+  "name": "SoNovel - 现代化小说下载工具",
+  "short_name": "SoNovel",
+  "description": "通用的网页内容处理与导出工具，支持多种格式下载",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["utilities", "productivity", "books"],
+  "lang": "zh-CN"
+}
